@@ -1,0 +1,22 @@
+---
+# tasks file for ldap
+- name: install openldap
+  yum:
+    name: openldap-servers
+    state: present
+
+- name: copy slapd.ldif from template
+  template:
+    src: slapd_ldif.j2
+    dest: /usr/local/etc/openldap/slapd.ldif
+
+- name: import the configuration database
+  command: /usr/local/sbin/slapadd -F /usr/local/etc/cn=config -l /usr/local/etc/openldap/slapd.ldif
+
+- name: start slapd
+  service:
+    name: slapd
+    state: started
+    enabled: yes
+
+
